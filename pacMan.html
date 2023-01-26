@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../static/css/Css.css">
+</head>
+
+<body>
+    <div id = "pacManDiv" class="PacManStyle">
+        <img id = "pacManObj" class="PacManImg" src = "../static/images/pacMan.PNG">
+    </div>
+    
+
+
+<script>
+
+var pacManObj = null;
+var moveInformation = {
+    direction: 'left',
+    //28 by 31 start at [23, 15]
+    /*
+    0 is wall 
+    1 is pellet 
+    2 is Big pellet 
+    3 is eaten 
+    4 is teleport
+    */   
+    map:[
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],//0
+        [0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+        [0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0],
+        [0,2,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,2,0],
+        [0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0],
+        [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],//5
+        [0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0],
+        [0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0],
+        [0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0],//10
+        [0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+        [4,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,4],
+        [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],//15
+        [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0],//20
+        [0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0],
+        [0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0],
+        [0,2,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,2,0],//23
+        [0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0],
+        [0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0],//25
+        [0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0],
+        [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0],
+        [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0],
+        [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]//30
+                    ],
+    location: [23, 15]
+};
+
+var Ghost
+
+window.onload = init;
+//Initialize map and pacman
+function init() 
+{
+
+    //Inititialze pellets
+    for(var x = 0; x < moveInformation.map.length; x++)
+{
+ for(var y = 0; y < moveInformation.map[0].length; y++)
+{
+  if(moveInformation.map[x][y] != 0)
+  {
+    const image = document.createElement('img');
+        image.src = "../static/images/Pellet.PNG";
+        image.id = x +'!'+y;
+        image.style.position = "fixed";
+        image.style.left = y*3.2 +'%';
+        image.style.top = x*3.2 +'%';
+        const element = document.getElementById("pacManDiv");
+        element.appendChild(image);
+  }
+
+}   
+}
+
+
+        //Initialize keyboard event listener
+        //Enable player controlled movement
+        document.addEventListener("keydown", (event) => {
+    switch (event.key) 
+    {
+                case 'w': //MoveUp
+                    moveInformation.direction = 'up';
+                    break;
+                case 's': //MoveDown
+                    moveInformation.direction = 'down';
+                    break;
+                case 'd': //MoveRight
+                    moveInformation.direction = 'right';
+                    break;
+                case 'a': //MoveLeft
+                    moveInformation.direction = 'left';
+                    break;
+        }
+    }, false);
+
+        //Set Pacman starting location
+        pacManObj = document.getElementById("pacManObj");
+        pacManObj.style.left = "47.3%";
+        pacManObj.style.top = "72.5%";
+
+        //Set interval to change pacman design
+        setInterval(function () {change(pacManObj, moveInformation)}, 50);
+
+        //set interval to move pacman
+        setInterval(function () {move(pacManObj, moveInformation)}, 100);
+        
+}
+
+//Animates Pacman
+function change(pacManObj, moveInformation)
+{
+    if(pacManObj.getAttribute('src') == "../static/images/pacMan.PNG")
+    {
+        switch(moveInformation.direction)
+        {
+            case'up':
+            pacManObj.style.transform = 'rotate(270deg)'
+            break;
+            case'down':
+            pacManObj.style.transform = 'rotate(90deg)'
+            break;
+            case'left':
+            pacManObj.style.transform = 'rotate(180deg)'
+            break;
+            case'right':
+            pacManObj.style.transform = 'rotate(0deg)'
+            break;    
+        }
+        
+
+
+        pacManObj.src = "../static/images/pacManOpen.PNG";
+        
+        return
+    }
+    pacManObj.src = "../static/images/pacMan.PNG";
+
+}
+
+function GhostMove()
+{
+    GhostObj.style.top = parseFloat(GhostObj.style.top) + 3.2 + "%";
+    moveInformation.location[0]= moveInformation.location[0] + temp[0];    
+}
+
+//Helper function to move Pacman
+function moveHelper(temp, pacManObj, moveInformation)
+{
+
+    if(temp[1] == 'y')
+    {
+        if(moveInformation.map[moveInformation.location[0] +temp[0]][moveInformation.location[1]] != 0)
+            {
+                //move
+                pacManObj.style.top = parseFloat(pacManObj.style.top) + temp[2] + "%";
+                moveInformation.location[0]= moveInformation.location[0] + temp[0];
+                console.log(moveInformation.location[0]);
+                //Remove pellet if needed
+                if(moveInformation.map[moveInformation.location[0]][moveInformation.location[1]] == 3)
+                {
+                }
+                else
+                {
+            const imageToBeRemoved = document.getElementById(moveInformation.location[0]+'!'+(moveInformation.location[1]));
+            console.log("removed:", imageToBeRemoved);
+            document.getElementById("pacManDiv").removeChild(imageToBeRemoved);
+            moveInformation.map[moveInformation.location[0]][moveInformation.location[1]] = 3;
+            
+                }
+
+            }        
+    }
+    else
+    {
+
+        if(moveInformation.map[moveInformation.location[0]][moveInformation.location[1]+temp[0]] != 0)
+            {
+                //move
+                pacManObj.style.left = parseFloat(pacManObj.style.left) +temp[2] + "%";
+                moveInformation.location[1] = moveInformation.location[1]  +temp[0];
+                console.log(moveInformation.location[1]);
+                //Remove pellet if needed
+                if(moveInformation.map[moveInformation.location[0]][moveInformation.location[1]] == 3)
+                {
+                }
+                else
+                {
+            const imageToBeRemoved = document.getElementById(moveInformation.location[0]+'!'+(moveInformation.location[1]));
+            console.log("removed:", imageToBeRemoved);
+            document.getElementById("pacManDiv").removeChild(imageToBeRemoved);
+            moveInformation.map[moveInformation.location[0]][moveInformation.location[1]] = 3;
+            
+                }
+
+            } 
+
+
+
+
+
+    }
+
+
+
+
+
+}
+
+//Moves Pacman
+function move(pacManObj, moveInformation) {
+
+            switch (moveInformation.direction) 
+            {
+            case 'up': //MoveUp
+            moveHelper([-1, 'y', -3.2], pacManObj, moveInformation);
+            break;
+
+            case 'down': //MoveDown
+            moveHelper([1, 'y', 3.2], pacManObj, moveInformation);
+            break;
+
+            case 'right': //MoveRight
+            moveHelper([1, 'x', 3.2], pacManObj, moveInformation);
+            break;
+
+            case 'left': //MoveLeft
+            moveHelper([-1, 'x',-3.2], pacManObj, moveInformation);
+            break;
+
+        }
+}
+
+</script>   
+</body>
+</html>
