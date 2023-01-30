@@ -522,7 +522,7 @@ function respawnGhost(Ghost)
     Ghost.location = [15, 11]
     break;
     }
-    setTimeout(()=>{restartGhost(Ghost);}, 2000);
+    setTimeout(()=>{restartGhost(Ghost);}, 3300);
     Ghost.img.style.left = leftTochange;
     Ghost.img.style.top = topTochange;
 }
@@ -560,10 +560,7 @@ function PacManBlueMode()
 
     if(moveInformation.blueMode == 0)
     {
-    //GhostChange(Pinky);
-    //GhostChange(Blinky);
-    //GhostChange(Inky);
-    //GhostChange(Clyde);
+    moveInformation.blueMode = 1;
 
     Pinky.img.src = "../static/images/BlueGhost.PNG";
     Blinky.img.src = "../static/images/BlueGhost.PNG";
@@ -592,6 +589,8 @@ function PacManReturnToNormalMode()
     Blinky.caneatpacMan = true;
     Inky.caneatpacMan = true;
     Clyde.caneatpacMan = true;
+
+    moveInformation.blueMode = 0;
 }
 
 //Fill with Pellets
